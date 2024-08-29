@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using RazorPagesTestSample.Data;
 
 //test comment to check CI
+//test comment to check dockerBuildPush
 namespace RazorPagesTestSample
 {
     public class Program
