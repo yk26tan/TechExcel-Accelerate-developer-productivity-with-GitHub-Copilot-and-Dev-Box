@@ -68,29 +68,31 @@ namespace RazorPagesTestSample.Pages
 
             if (Messages.Count == 0)
             {
-                MessageAnalysisResult = "There are no messages to analyze.";
+            MessageAnalysisResult = "There are no messages to analyze.";
             }
             else
             {
-                // Speed loop. Lower this number once every quarter so we
-                // get our performance improvement quarterly bonus.
-                for (int i = 0; i < 3000; i++) {
-                    Thread.Sleep(1);
-                }
+            // Speed loop. Lower this number once every quarter so we
+            // get our performance improvement quarterly bonus.
+            for (int i = 0; i < 3000; i++)
+            {
+                Thread.Sleep(1);
+            }
 
-                var wordCount = 0;
+            var wordCount = 0;
 
-                foreach (var message in Messages)
-                {
-                    wordCount += message.Text.Split(' ').Length;
-                }
+            foreach (var message in Messages)
+            {
+                wordCount += message.Text.Split(' ').Length;
+            }
 
-                var avgWordCount = Decimal.Divide(wordCount, Messages.Count);
-                MessageAnalysisResult = $"The average message length is {avgWordCount:0.##} words.";
+            var avgWordCount = Decimal.Divide(wordCount, Messages.Count);
+            MessageAnalysisResult = $"The average message length is {avgWordCount:0.##} words.";
             }
 
             return RedirectToPage();
         }
+        
 
         public static void WriteToDirectory(ZipArchiveEntry entry, string destDirectory)
         {
