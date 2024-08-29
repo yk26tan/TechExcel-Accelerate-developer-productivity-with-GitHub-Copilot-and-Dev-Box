@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using RazorPagesTestSample.Data;
 
+//test comment to check CI
 namespace RazorPagesTestSample
 {
     public class Program
