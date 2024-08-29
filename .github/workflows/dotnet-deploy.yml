@@ -1,11 +1,11 @@
 name: .NET CI
 
 env:
-  registryName: ymgh3earpjbu2mpnpreg.azurecr.io
+  registryName: {your_registry_name}.azurecr.io
   repositoryName: techexcel/dotnetcoreapp
   dockerFolderPath: ./src/Application/src/RazorPagesTestSample
   tag: ${{github.run_number}}
-  
+
 on:
   push:
     branches: [ main ]
@@ -35,7 +35,6 @@ jobs:
       run: dotnet test --no-build --verbosity normal ./src/Application/tests/RazorPagesTestSample.Tests/RazorPagesTestSample.Tests.csproj
       
   dockerBuildPush:
-    
     runs-on: ubuntu-latest
     needs: build
 
@@ -61,3 +60,64 @@ jobs:
       
     - name: Docker Push
       run: docker push $registryName/$repositoryName:$tag
+
+  deploy-to-dev:
+  
+    runs-on: ubuntu-latest
+    needs: dockerBuildPush
+    environment:
+      name: dev
+      url: https://ymgh3earpjbu2-dev.azurewebsites.net/
+    
+    steps:
+      - name: 'Login via Azure CLI'
+        uses: azure/login@v2.1.1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'ymgh3earpjbu2-dev'
+          images: ymgh3earpjbu2mpnpreg.azurecr.io/techexcel/dotnetcoreapp:${{github.run_number}}
+
+  deploy-to-test:
+  
+    runs-on: ubuntu-latest
+    needs: deploy-to-dev
+    environment:
+      name: test
+      url: https://ymgh3earpjbu2-test.azurewebsites.net/
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: 'Login via Azure CLI'
+      uses: azure/login@v2.1.1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'ymgh3earpjbu2-test'
+        images: ymgh3earpjbu2mpnpreg.azurecr.io/techexcel/dotnetcoreapp:${{github.run_number}}
+
+  deploy-to-prod:
+  
+    runs-on: ubuntu-latest
+    needs: deploy-to-test
+    environment:
+      name: prod
+      url: https://ymgh3earpjbu2-prod.azurewebsites.net/
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: 'Login via Azure CLI'
+      uses: azure/login@v2.1.1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'ymgh3earpjbu2-prod'
+        images: ymgh3earpjbu2mpnpreg.azurecr.io/techexcel/dotnetcoreapp:${{github.run_number}}
