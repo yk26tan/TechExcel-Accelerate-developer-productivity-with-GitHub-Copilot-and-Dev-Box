@@ -8,7 +8,7 @@ using RazorPagesTestSample.Data;
 
 //test comment to check CI
 //test comment to check dockerBuildPush take2
-//test comment to check deployment to dev, test, prod
+//test comment to check deployment to dev, test, prod take2
 namespace RazorPagesTestSample
 {
     public class Program
